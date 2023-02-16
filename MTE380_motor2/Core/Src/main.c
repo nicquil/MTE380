@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "motors.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -55,6 +56,7 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/*
 void motor_run(int s)
 {
 	TIM2 -> CCR1 = s; // set the speed of motor1
@@ -72,17 +74,43 @@ void motor_run(int s)
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
 
-/*
-	HAL_GPIO_WritePin(motor_driver_IN1_GPIO_Port, motor_driver_IN1_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(motor_driver_IN2_GPIO_Port, motor_driver_IN2_Pin, GPIO_PIN_RESET);
-
-	HAL_GPIO_WritePin(motor_driver_IN3_GPIO_Port, motor_driver_IN3_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(motor_driver_IN4_GPIO_Port, motor_driver_IN4_Pin, GPIO_PIN_RESET);
-*/
-
 }
 
+void motor_run_back(int s){
+	TIM2 -> CCR1 = s; // set the speed of motor1
+	TIM2 -> CCR2 = s; // set the speed of motor2
 
+	//motor1 forward
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+
+	//motor2 forward
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+}
+
+void motor_stop(){
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
+
+	//motor2 forward
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+
+}
+void motor_turn(int s){
+	TIM2 -> CCR1 = s; // set the speed of motor1
+	TIM2 -> CCR2 = s; // set the speed of motor2
+
+	//motor1 forward
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+
+	//motor2 forward
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+}
+*/
 /* USER CODE END 0 */
 
 /**
@@ -127,12 +155,18 @@ int main(void)
   while (1)
   {
 	  // running the motors
-	  motor_run(100);
-	  HAL_Delay(2000);
 	  motor_run(500);
 	  HAL_Delay(2000);
-	  motor_run(0);
+	  motor_stop();
 	  HAL_Delay(2000);
+	  motor_run_back(500);
+	  HAL_Delay(2000);
+	  motor_stop();
+	  HAL_Delay(2000);
+	  motor_turn(500);
+	  HAL_Delay(2000);
+	  motor_stop();
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

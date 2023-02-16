@@ -60,8 +60,8 @@ all: main-build
 main-build: MTE380_motor2.elf secondary-outputs
 
 # Tool invocations
-MTE380_motor2.elf MTE380_motor2.map: $(OBJS) $(USER_OBJS) C:\Users\peanu\STM32CubeIDE\workspace_1.11.2\MTE380_motor2\STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "MTE380_motor2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\peanu\STM32CubeIDE\workspace_1.11.2\MTE380_motor2\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MTE380_motor2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+MTE380_motor2.elf MTE380_motor2.map: $(OBJS) $(USER_OBJS) C:\Users\nicol\STM32CubeIDE\Git\MTE380\MTE380_motor2\STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "MTE380_motor2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\nicol\STM32CubeIDE\Git\MTE380\MTE380_motor2\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MTE380_motor2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

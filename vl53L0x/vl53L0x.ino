@@ -1,5 +1,5 @@
 /*!
- * @file vl53l0.ino
+ * @file vl53l0x.ino
  * @brief DFRobot's Laser rangefinder library. The example shows the usage of VL53L0X in a simple way.
  *
  * @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
@@ -28,10 +28,9 @@ void setup() {
   //setMode with eContinuous / eSingle and eLow / eHigh (Single Reading not useful for our application)
   //Continuous Reading
   //Case 1: Set to Back-to-back mode and high precision mode (.25/.50/.75 mm accuracy -> unnecessary for our application)
-  //sensor.setMode(sensor.eContinuous,sensor.eHigh);
-  //Case 1: Set to Back-to-back mode and low precision mode (nearest mm ex. 8.8cm -> reports 88.00mm)
   sensor.setMode(sensor.eContinuous,sensor.eLow);
-
+  //Case 1: Set to Back-to-back mode and low precision mode (nearest mm ex. 8.8cm -> reports 88.00mm)
+  // sensor.setMode(sensor.eContinuous,sensor.eLow);
 
   //Laser rangefinder begins to work
   sensor.start();
@@ -47,5 +46,5 @@ void loop()
   Serial.print("Distance: ");Serial.println(sensor.getDistance());
   //The delay is added to demonstrate the effect, and if you do not add the delay,
   //it will not affect the measurement accuracy
-  delay(200);
+  delay(500);
 }

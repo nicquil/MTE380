@@ -3,9 +3,11 @@
 #include <Adafruit_ICM20948.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
-#include <readGyroscope.h>
+#include "readGyroscope.h"
 
 Adafruit_ICM20948 icm;
+
+float rotationThreshold = M_PI/180;
 
 Axes readGyro(float orX, float orY, float orZ) {
   

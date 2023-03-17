@@ -55,3 +55,9 @@
 
       delay(250);                  // wait a bit since people have to read the output :)
     }
+
+    void setupUltrasonic()
+
+
+
+    int detectUltrasonic(int frequency, int time)

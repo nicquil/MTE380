@@ -40,8 +40,8 @@ void straight_move(int speed, bool direction){
 
   digitalWrite(in1, direction);
   digitalWrite(in2, !direction);
-  digitalWrite(in3, !direction);
-  digitalWrite(in4, direction);    
+  digitalWrite(in3, direction);
+  digitalWrite(in4, !direction);    
 }
 
 void stop_motors(){

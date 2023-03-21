@@ -9,6 +9,8 @@ Adafruit_ICM20948 icm;
 
 float rotationThreshold = M_PI/180;
 
+Axes gyroOut;
+
 Axes readGyro(float orX, float orY, float orZ) {
   
   //  /* Get a new normalized sensor event */
@@ -62,7 +64,15 @@ Axes readGyro(float orX, float orY, float orZ) {
   a.y = orY;
   a.z = orZ;
 
+  Serial.print("Orientation X: ");
+  Serial.println(orX);
+  Serial.print("Orientation Y: ");
+  Serial.println(orY);
+  Serial.print("Orientation Z: ");
+  Serial.println(orZ);
+
   return a;
+  
 }
 
 void setupGyro(){

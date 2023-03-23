@@ -78,4 +78,5 @@ void loop() {
       }
     }
   }
+  stop_motors();
 }

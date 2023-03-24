@@ -22,18 +22,18 @@ void motor_setup(){
   analogWrite(enB, 255);  
 
 }
-void move_forward(int speedA, int speedB){
-  analogWrite(enA, speedA);  
+void move_forward(){
+  analogWrite(enA, 192);  
   digitalWrite(inA, 1);  
 
-  analogWrite(enB, speedB);
+  analogWrite(enB, 200);  
   digitalWrite(inB, 0);  
 }
-void move_backward(int speedA, int speedB){
-  analogWrite(enA, speedA);  
+void move_backward(){
+  analogWrite(enA, 200);  
   digitalWrite(inA, 0);  
 
-  analogWrite(enB, speedB);  
+  analogWrite(enB, 200);  
   digitalWrite(inB, 1);  
 }
 void stop_motors(){
@@ -41,16 +41,3 @@ void stop_motors(){
   analogWrite(enB, 255);    
 }
 
-void move(int speedA, int speedB, bool direction){ // right motor speed, left motor speed, forward = 1 / backward = 0
-  analogWrite(enA, speedA);
-  analogWrite(enB, speedB);
-
-  if(direction == 1) {
-    digitalWrite(inA, 1);  
-    digitalWrite(inB, 0);  
-  }
-  else if (direction == 0){
-    digitalWrite(inA, 0);  
-    digitalWrite(inB, 1);     
-  }
-}

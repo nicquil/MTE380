@@ -52,15 +52,20 @@ void loop() {
   // readUltrasonic(); // may be skipping some ultrasonic sensor reads due to byte reading in function (defined in sensor_functions.cpp)
   
   // test1();
-  test2();
-
+  test2(); //90deg test
+  // test3(); //180deg test
+  // test4(); //360deg test
   delay(5000);
 }
 
 void driveTime(int ms){
+  lastT = millis();
   driveLeft(224);
   driveRight(221);
-  delay(ms);
+  Axes gyroOut;
+  while((millis() - lastT) < ms){
+    gyroOut =     
+  }
   stop_motors();
 }
 
@@ -72,35 +77,31 @@ void turn(int deg) {
   lastT = millis();
   Axes gyroOut;
   if(deg >= 0){
-    driveLeft(-224);
-    driveRight(224);
+    driveLeft(-230);
+    driveRight(230);
     while(oriZ < deg){
       gyroOut = readGyro(oriX, oriY, oriZ);
       
-      oriZ += gyroOut.z*(millis()-lastT)/970;
+      oriZ += gyroOut.z*(millis()-lastT)/1010; //970: 1000 minus 3 percent tolerance, 1.015: accounting for 1.5 percent tolerance due to cold day, change to 1 when near 25 deg C
       lastT = millis();
       // delay(10);
     }
-    stop_motors();
-    oriX = 0;
-    oriY = 0;
-    oriZ = 0;
   }
   else{
-    driveLeft(224);
-    driveRight(-224);
+    driveLeft(230);
+    driveRight(-230);
     while(oriZ > deg){
       gyroOut = readGyro(oriX, oriY, oriZ);
       
-      oriZ += gyroOut.z*(millis()-lastT)/970;
+      oriZ += gyroOut.z*(millis()-lastT)/1010;
       lastT = millis();
       // delay(10);
     }
-    stop_motors();
-    oriX = 0;
-    oriY = 0;
-    oriZ = 0;
   }
+  stop_motors();
+  oriX = 0;
+  oriY = 0;
+  oriZ = 0;
 }
 
 void test1(){
@@ -129,24 +130,30 @@ void test1(){
 }
 
 void test2(){
-  turn(90);
-  delay(1000);
+  turn(88);
+  delay(3000);
   
-  turn(90);
-  delay(1000);
+  turn(88);
+  delay(3000);
 
-  turn(90);
-  delay(1000);
+  turn(88);
+  delay(3000);
 
-  turn(90);
-  delay(1000);
+  turn(88);
+  delay(3000);
 
+}
+
+void test3(){
   turn(180);
   delay(1000);
 
   turn(-180);
   delay(1000);
 
+}
+
+void test4(){
   turn(360);
   delay(1000);
 

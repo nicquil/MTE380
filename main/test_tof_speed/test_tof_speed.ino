@@ -9,8 +9,9 @@
 bool CLOSE_DETECTED = 0;
 bool MED_DETECTED = 0;
 bool FAR_DETECTED = 0;
-float MIN_DETECTION_COUNT = 8;
-float MIN_DETECTION_COUNT_FAR = 5;
+float MIN_DETECTION_COUNT = 6;
+float MIN_DETECTION_COUNT_MED = 4;
+float MIN_DETECTION_COUNT_FAR = 3;
 
 // float MIN_DISTANCE_TOL = 25; // in mm (tol to determine a reading is similar / same distance)
 
@@ -36,14 +37,15 @@ void loop() {
 
   while (CLOSE_DETECTED == 0 || MED_DETECTED == 0 || FAR_DETECTED == 0){
     // speed up if reading from 0.1m to 0.6m obstacle
-    delay(50);
+    delay(25);
     distance = readTOF();
     if ((distance < 50) || (distance > 2000)){
       closeCt = 0;
       medCt = 0;
       farCt = 0;
     }
-    else if ((distance > 100) && (distance < 630) && (CLOSE_DETECTED == 0)) {   
+    // else if ((distance > 100) && (distance < 630) && (CLOSE_DETECTED == 0)) {   
+    else if ((distance > 475) && (distance < 525) && (CLOSE_DETECTED == 0)) {    
       closeCt++;
       medCt = 0;
       farCt = 0;
@@ -61,7 +63,7 @@ void loop() {
         Serial.println("SLOW SPEED ACTIVATED (CLOSE RANGE)");
       }
     } 
-    else if ((distance > 670) && (distance < 1330) && (MED_DETECTED == 0)) {   
+    else if ((distance > 1175) && (distance < 1225) && (MED_DETECTED == 0)) {   
       medCt++;
       closeCt = 0;
       farCt = 0;
@@ -72,7 +74,7 @@ void loop() {
       //   prev_dist = distance;
       //   Serial.println("TWO CONSECUTIVE MED RANGES DETECTED");      
       // }
-      if(medCt == MIN_DETECTION_COUNT) {
+      if(medCt == MIN_DETECTION_COUNT_FAR) {
         move(221, 224, 1); //speed a and b , direction: 1->cw 0->ccw
         MED_DETECTED = 1;
         medCt = 0;
@@ -80,7 +82,7 @@ void loop() {
 
       }
     }
-    else if ((distance > 1370) && (distance < 2000) && (FAR_DETECTED == 0)) {   
+    else if ((distance > 1875) && (distance < 1925) && (FAR_DETECTED == 0)) {   
       farCt++;
       closeCt = 0;
       medCt = 0;

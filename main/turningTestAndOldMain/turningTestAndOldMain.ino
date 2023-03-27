@@ -8,14 +8,22 @@
 #include "readGyroscope.h"
 #include "sensor_functions.h"
 #include "motor_defs.h"
-
+#include <PID_v1.h>
 
 // Adafruit_ICM20948 icm;
-// uint16_t measurement_delay_us = 65535; // Delay between measurements for testing
-float oriX = 0;
-float oriY = 0;
-float oriZ = 0;
+#define kP 4
+#define kI 0.2
+#define kD 1
+
+
+double oriX = 0;
+double oriY = 0;
+double oriZ = 0;
+
+double heading = 0;
+
 unsigned long lastT;
+
 // float rotationThreshold = M_PI/180;
 // float rotationThreshold = 0.015;
 
@@ -50,17 +58,60 @@ void loop() {
 
   // readTOF();
   // readUltrasonic(); // may be skipping some ultrasonic sensor reads due to byte reading in function (defined in sensor_functions.cpp)
-  
+  driveTime(3000);
+  turn(180);
+  driveTime(3000);  
+  // driveLeft(220);
+  // driveRight(220);
+  // delay(8000);
+  // stop_motors();
   // test1();
-  test2();
-
+  // test2(); //90deg test
+  // test3(); //180deg test
+  // test4(); //360deg test
   delay(5000);
 }
 
 void driveTime(int ms){
-  driveLeft(224);
-  driveRight(221);
-  delay(ms);
+  lastT = millis();
+  double currL = 220;
+  double currR = 220;
+
+  Axes gyroOut;  
+  
+  PID myPID(&oriZ, &currL, &heading, kP, kI, kD, P_ON_M, DIRECT);
+  
+  driveLeft(currL);
+  driveRight(currR);
+  unsigned long startT = millis();
+  lastT = millis();
+  myPID.SetMode(AUTOMATIC);
+
+  while((millis() - startT) < ms){
+    gyroOut = readGyro(oriX, oriY, oriZ);
+    oriZ += gyroOut.z*(millis()-lastT)/1010;
+    myPID.Compute();
+    driveLeft(currL);
+    // lastT = millis();
+    // if(oriZ > 2){
+    //   currL -= 1;
+    //   currR += 1;
+    //   driveLeft(currL);
+    //   driveRight(currR);
+    // }
+    // else if(oriZ < -2){
+    //   currL += 1;
+    //   currR -= 1;
+    //   driveLeft(currL);
+    //   driveRight(currR);
+    // }
+
+    // delay(10);
+    
+  }
+  oriX = 0;
+  oriY = 0;
+  oriZ = 0;
   stop_motors();
 }
 
@@ -72,35 +123,31 @@ void turn(int deg) {
   lastT = millis();
   Axes gyroOut;
   if(deg >= 0){
-    driveLeft(-224);
-    driveRight(224);
+    driveLeft(-230);
+    driveRight(230);
     while(oriZ < deg){
       gyroOut = readGyro(oriX, oriY, oriZ);
       
-      oriZ += gyroOut.z*(millis()-lastT)/970;
+      oriZ += gyroOut.z*(millis()-lastT)/1010; //970: 1000 minus 3 percent tolerance, 1.015: accounting for 1.5 percent tolerance due to cold day, change to 1 when near 25 deg C
       lastT = millis();
       // delay(10);
     }
-    stop_motors();
-    oriX = 0;
-    oriY = 0;
-    oriZ = 0;
   }
   else{
-    driveLeft(224);
-    driveRight(-224);
+    driveLeft(230);
+    driveRight(-230);
     while(oriZ > deg){
       gyroOut = readGyro(oriX, oriY, oriZ);
       
-      oriZ += gyroOut.z*(millis()-lastT)/970;
+      oriZ += gyroOut.z*(millis()-lastT)/1010;
       lastT = millis();
       // delay(10);
     }
-    stop_motors();
-    oriX = 0;
-    oriY = 0;
-    oriZ = 0;
   }
+  stop_motors();
+  oriX = 0;
+  oriY = 0;
+  oriZ = 0;
 }
 
 void test1(){
@@ -130,23 +177,29 @@ void test1(){
 
 void test2(){
   turn(90);
-  delay(1000);
+  delay(3000);
   
   turn(90);
-  delay(1000);
+  delay(3000);
 
   turn(90);
-  delay(1000);
+  delay(3000);
 
   turn(90);
-  delay(1000);
+  delay(3000);
 
+}
+
+void test3(){
   turn(180);
   delay(1000);
 
   turn(-180);
   delay(1000);
 
+}
+
+void test4(){
   turn(360);
   delay(1000);
 

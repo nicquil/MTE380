@@ -11,9 +11,9 @@
 #include <PID_v1.h>
 
 // Adafruit_ICM20948 icm;
-#define kP 4
-#define kI 0.2
-#define kD 1
+#define kP 0.001 //0.005 //0.001
+#define kI 0.1 //0.1
+#define kD 0.003 //0.003
 
 
 double oriX = 0;
@@ -60,7 +60,8 @@ void loop() {
   // readUltrasonic(); // may be skipping some ultrasonic sensor reads due to byte reading in function (defined in sensor_functions.cpp)
   driveTime(3000);
   turn(180);
-  driveTime(3000);  
+  driveTime(3000);
+  turn(180);  
   // driveLeft(220);
   // driveRight(220);
   // delay(8000);
@@ -86,28 +87,12 @@ void driveTime(int ms){
   unsigned long startT = millis();
   lastT = millis();
   myPID.SetMode(AUTOMATIC);
-
+  myPID.SetSampleTime(10);
   while((millis() - startT) < ms){
     gyroOut = readGyro(oriX, oriY, oriZ);
     oriZ += gyroOut.z*(millis()-lastT)/1010;
     myPID.Compute();
-    driveLeft(currL);
-    // lastT = millis();
-    // if(oriZ > 2){
-    //   currL -= 1;
-    //   currR += 1;
-    //   driveLeft(currL);
-    //   driveRight(currR);
-    // }
-    // else if(oriZ < -2){
-    //   currL += 1;
-    //   currR -= 1;
-    //   driveLeft(currL);
-    //   driveRight(currR);
-    // }
-
-    // delay(10);
-    
+    driveLeft(currL);    
   }
   oriX = 0;
   oriY = 0;
@@ -123,8 +108,8 @@ void turn(int deg) {
   lastT = millis();
   Axes gyroOut;
   if(deg >= 0){
-    driveLeft(-230);
-    driveRight(230);
+    driveLeft(-228);
+    driveRight(228);
     while(oriZ < deg){
       gyroOut = readGyro(oriX, oriY, oriZ);
       
@@ -134,8 +119,8 @@ void turn(int deg) {
     }
   }
   else{
-    driveLeft(230);
-    driveRight(-230);
+    driveLeft(228);
+    driveRight(-228);
     while(oriZ > deg){
       gyroOut = readGyro(oriX, oriY, oriZ);
       

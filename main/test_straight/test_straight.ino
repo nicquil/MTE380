@@ -10,6 +10,7 @@
 #include "motor_defs.h"
 #include "temporary_functions.h"
 
+
 int TEST_COMPLETED = 0;
 
 void setup(void) {
@@ -22,11 +23,14 @@ void setup(void) {
 
 
 void loop() {
-  while (TEST_COMPLETED == 0) {
-    move(155, 170, 1); //speed, direction: 1->cw 0->ccw
-    delay(8000);
-    stop_motors();
-    TEST_COMPLETED = 1;
+  int speedA = 180;
+  int speedB = 180;
+  move(speedA, speedB, 1); //speed, direction: 1->cw 0->ccw  
+  while (speedA > 100) {
+    speedA = speedA - 20;
+    speedB = speedB - 20;
+    move(speedA, speedB, 1); //speed, direction: 1->cw 0->ccw
+    delay(3000);
   }
- 
+  stop_motors(); 
 }

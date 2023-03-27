@@ -1,4 +1,5 @@
 void motor_setup();
-void straight_move(int speed, bool direction);
-void turn_move(int speed, bool direction);
+void move(int speedA, int speedB, bool direction);
 void stop_motors();
+void driveLeft(int speed);
+void driveRight(int speed);

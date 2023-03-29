@@ -25,6 +25,15 @@ void setup_serial_i2c(){
   Serial.begin(9600);          // start serial communication at 9600bps
 }
 
+void setupUltra(){
+  // The Trigger pin will tell the sensor to range find
+  pinMode(TRIG_PIN, OUTPUT);
+  digitalWrite(TRIG_PIN, LOW);
+
+  //Set Echo pin as input to measure the duration of 
+  //pulses coming back from the distance sensor
+  pinMode(ECHO_PIN, INPUT);
+}
 
 // setup tof vl53l0x sensor
 void setupTOF() {

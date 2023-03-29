@@ -8,9 +8,9 @@ int inA = 8; //directionA
 int enB = 3; //PWMB
 int inB = 4; //directionB
 
-// Ultrasonic connections
-const int TRIG_PIN = 19;
-const int ECHO_PIN = 18;
+const int TRIG_PIN = 7;
+const int ECHO_PIN = 6;
+
 // Anything over 400 cm (23200 us pulse) is "out of range"
 const unsigned int MAX_DIST = 23200;
 
@@ -69,6 +69,7 @@ void driveRight(int speed){
 }
 
 float readUltra(){
+  
   unsigned long t1;
   unsigned long t2;
   unsigned long pulse_width;
@@ -107,3 +108,14 @@ float readUltra(){
   }
   return cm;
 }
+
+void setupUltra(){
+  // The Trigger pin will tell the sensor to range find
+  pinMode(TRIG_PIN, OUTPUT);
+  digitalWrite(TRIG_PIN, LOW);
+
+  //Set Echo pin as input to measure the duration of 
+  //pulses coming back from the distance sensor
+  pinMode(ECHO_PIN, INPUT);
+}
+

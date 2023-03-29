@@ -4,3 +4,4 @@ void stop_motors();
 void driveLeft(int speed);
 void driveRight(int speed);
 float readUltra();
+void setupUltra();

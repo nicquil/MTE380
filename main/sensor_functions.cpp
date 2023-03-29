@@ -25,31 +25,6 @@ void setup_serial_i2c(){
   Serial.begin(9600);          // start serial communication at 9600bps
 }
 
-// setup ultrasonic srf02 sensor
-void setupUltrasonic(){
-  // Wire.begin();                // join i2c bus (address optional for master)
-  // Serial.begin(9600);          // start serial communication at 9600bps
-
-  // move to readUltrasonic()
-  // step 1: instruct sensor to read echoes
-  // Wire.beginTransmission(112); // transmit to device #112 (0x70)
-  // // the address specified in the datasheet is 224 (0xE0)
-  // // but i2c adressing uses the high 7 bits so it's 112
-  // Wire.write(byte(0x00));      // sets register pointer to the command register (0x00)
-  // Wire.write(byte(0x51));      // command sensor to measure in "centimeters" (0x51)
-  // // use 0x51 for centimeters
-  // // use 0x52 for ping microseconds
-  // Wire.endTransmission();      // stop transmitting
-
-  // // step 2: wait for readings to happen
-  // delay(65);                   // datasheet suggests at least 65 milliseconds
-
-  // // step 3: instruct sensor to return a particular echo reading
-  // Wire.beginTransmission(112); // transmit to device #112
-  // Wire.write(byte(0x02));      // sets register pointer to echo #1 register (0x02)
-  // Wire.endTransmission();      // stop transmitting
-
-}
 
 // setup tof vl53l0x sensor
 void setupTOF() {
@@ -72,40 +47,44 @@ void setupTOF() {
   //delay(500);
 }
 
-// read nnn cm of ultrasonic sensor distance detection
-int readUltrasonic() { //frequency in ms for reading collection
-  Wire.beginTransmission(112); // transmit to device #112 (0x70)
-  // the address specified in the datasheet is 224 (0xE0)
-  // but i2c adressing uses the high 7 bits so it's 112
-  Wire.write(byte(0x00));      // sets register pointer to the command register (0x00)
-  Wire.write(byte(0x51));      // command sensor to measure in "centimeters" (0x51)
-  // use 0x51 for centimeters
-  // use 0x52 for ping microseconds
-  Wire.endTransmission();      // stop transmitting
+float readUltra(){
+  unsigned long t1;
+  unsigned long t2;
+  unsigned long pulse_width;
+  float cm;
+  float inches;
 
-  // step 2: wait for readings to happen
-  delay(65);                   // datasheet suggests at least 65 milliseconds
+  // Hold the trigger pin high for at least 10 us
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
 
-  // step 3: instruct sensor to return a particular echo reading
-  Wire.beginTransmission(112); // transmit to device #112
-  Wire.write(byte(0x02));      // sets register pointer to echo #1 register (0x02)
-  Wire.endTransmission();      // stop transmitting
+  // Wait for pulse on echo pin
+  while ( digitalRead(ECHO_PIN) == 0 );
 
-  int reading = 0;
-  
-  // step 4: request reading from sensor
-  Wire.requestFrom(112, 2);    // request 2 bytes from slave device #112
+  // Measure how long the echo pin was held high (pulse width)
+  // Note: the micros() counter will overflow after ~70 min
+  t1 = micros();
+  while ( digitalRead(ECHO_PIN) == 1);
+  t2 = micros();
+  pulse_width = t2 - t1;
 
-  // step 5: receive reading from sensor
-  if (2 <= Wire.available())   // if two bytes were received
-  {
-    reading = Wire.read();  // receive high byte (overwrites previous reading)
-    reading = reading << 8;    // shift high byte to be high 8 bits
-    reading |= Wire.read(); // receive low byte as lower 8 bits
-    Serial.print("Ultrasonic Distance: ");Serial.print(reading);   // print the reading
-    Serial.println(" cm");
+  // Calculate distance in centimeters and inches. The constants
+  // are found in the datasheet, and calculated from the assumed speed
+  //of sound in air at sea level (~340 m/s).
+  cm = pulse_width / 58.0;
+  inches = pulse_width / 148.0;
+
+  // Print out results
+  if ( pulse_width > MAX_DIST ) {
+    Serial.println("Out of range");
+  } else {
+    Serial.print(cm);
+    Serial.print(" cm \t");
+    Serial.print(inches);
+    Serial.println(" in");
   }
-  return reading;
+  return cm;
 }
 
 // read nnnn.nn mm of TOF sensor distance detection

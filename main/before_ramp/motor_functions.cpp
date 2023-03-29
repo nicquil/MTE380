@@ -54,3 +54,25 @@ void move(int speedA, int speedB, bool direction){ // right motor speed, left mo
     digitalWrite(inB, 0);     
   }
 }
+
+void driveLeft(int speed){
+  if (speed >= 0){
+    analogWrite(enB, speed);
+    digitalWrite(inB, 0);
+  }
+  else{
+    analogWrite(enB, -speed);
+    digitalWrite(inB, 1);
+  }
+}
+void driveRight(int speed){
+  if (speed >= 0){
+    analogWrite(enA, speed);
+    digitalWrite(inA, 1);
+  }
+  else{
+    analogWrite(enA, -speed);
+    digitalWrite(inA, 0);
+  }
+}
+

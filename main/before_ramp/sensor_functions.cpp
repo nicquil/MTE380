@@ -12,11 +12,6 @@
 #include "DFRobot_VL53L0X.h"
 
 DFRobot_VL53L0X sensor;
-// Ultrasonic connections
-const int TRIG_PIN = 19;
-const int ECHO_PIN = 18;
-// Anything over 400 cm (23200 us pulse) is "out of range"
-const unsigned int MAX_DIST = 23200;
 
 // setup serial communication and join i2c bus
 void setup_serial_i2c(){

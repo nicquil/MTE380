@@ -41,7 +41,7 @@ void loop() {
   if (TO_RAMP == 1) {
     // initial move for 2sec
     Serial.println("START MOTORS");    
-    driveTime(500, 200, 200);
+    driveTime(500, 190, 200);
     driveTime(1500, 160, 160);
     
     // begin detection for distance
@@ -59,7 +59,7 @@ void loop() {
     driveTime(2000, 170, 170);
 
     // when gyro changes, flag that the robot is on the ramp
-
+  
     // update global flags for next section of course
     // TO_RAMP = 0;
     // ON_RAMP = 1;

@@ -20,7 +20,7 @@ void setupUltrasonic();
 void setupTOF();
 
 // read nnn cm of ultrasonic sensor distance detection
-int readUltrasonic();
+float readUltra();
 
 // read nnnn.nn mm of TOF sensor distance detection
 int readTOF();

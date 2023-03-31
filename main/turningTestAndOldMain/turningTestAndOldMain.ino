@@ -16,8 +16,8 @@
 #define kD 0.003 //0.003
 
 // CHANGE THESE VALUES DEPENDING ON POLE POSITION
-float MAX_DISTANCE = 140; // 150: STEEL WALL MAX CLOSEST
-int poleClose = 2; //1: beside ramp, 2: at back boundary, 3: anywhere else
+float MAX_DISTANCE = 120; // 150: STEEL WALL MAX CLOSEST
+int poleClose = 3; //1: beside ramp, 2: at back boundary, 3: anywhere else
 
 int currCase = 0;
 int currCount = 0;
@@ -391,7 +391,7 @@ void loop() {
     
     lastT = millis();
 
-    if((oriY <= -2) || (abs(oriX) > 3)){      
+    if((oriY <= -3) || (abs(oriX) > 3)){      
       stop_motors();
       currCase++;
     }

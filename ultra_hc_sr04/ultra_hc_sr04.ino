@@ -51,7 +51,7 @@ void setup() {
 void loop() {
   readUltra();
   // Wait at least 60ms before next measurement
-  delay(60);
+  delay(150);
 }
 
 // float readUltra(){

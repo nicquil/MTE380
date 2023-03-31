@@ -102,9 +102,9 @@ float readUltra(){
     Serial.println("Out of range");
   } else {
     Serial.print(cm);
-    Serial.print(" cm \t");
-    Serial.print(inches);
-    Serial.println(" in");
+    Serial.println(" cm");
+    // Serial.print(inches);
+    // Serial.println(" in");
   }
   return cm;
 }
@@ -117,5 +117,6 @@ void setupUltra(){
   //Set Echo pin as input to measure the duration of 
   //pulses coming back from the distance sensor
   pinMode(ECHO_PIN, INPUT);
+
 }
 

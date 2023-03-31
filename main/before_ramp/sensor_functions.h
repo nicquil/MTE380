@@ -13,17 +13,16 @@
 // setup serial communication and join i2c bus
 void setup_serial_i2c();
 
-// setup ultrasonic srf02 sensor
-void setupUltrasonic();
+// setup ultrasonic hc-sr04 sensor
+void setupUltra();
 
 // setup tof vl53l0x sensor
 void setupTOF();
 
 // read nnn cm of ultrasonic sensor distance detection
-int readUltrasonic();
+float readUltra();
 
 // read nnnn.nn mm of TOF sensor distance detection
 int readTOF();
-
 
 #endif

@@ -6,10 +6,9 @@
 #include "readGyroscope.h"
 
 Adafruit_ICM20948 icm;
+// Axes gyroOut;
 
 float rotationThreshold = M_PI/180;
-
-Axes gyroOut;
 
 Axes readGyro(float orX, float orY, float orZ) {
   
@@ -53,26 +52,18 @@ Axes readGyro(float orX, float orY, float orZ) {
     gyro.gyro.z = 0;      
   }
   
-  orX += float(gyro.gyro.x)*3.6/M_PI;
+  orX = float(gyro.gyro.x)*180/M_PI;
   
-  orY += float(gyro.gyro.y)*3.6/M_PI;
+  orY = float(gyro.gyro.y)*180/M_PI;
 
-  orZ += float(gyro.gyro.z)*3.6/M_PI;
+  orZ = float(gyro.gyro.z)*180/M_PI;
   
   Axes a;
   a.x = orX;
   a.y = orY;
   a.z = orZ;
 
-  Serial.print("Orientation X: ");
-  Serial.println(orX);
-  Serial.print("Orientation Y: ");
-  Serial.println(orY);
-  Serial.print("Orientation Z: ");
-  Serial.println(orZ);
-
   return a;
-  
 }
 
 void setupGyro(){

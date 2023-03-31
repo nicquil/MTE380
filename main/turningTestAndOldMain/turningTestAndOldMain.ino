@@ -15,7 +15,8 @@
 #define kI 0.1 //0.1
 #define kD 0.003 //0.003
 
-int currCase = 1;
+int currCase = 0;
+int currCount = 0;
 
 double oriX = 0;
 double oriY = 0;
@@ -23,10 +24,7 @@ double oriZ = 0;
 
 double currL = 210;
 double currR = 210;
-
 double heading = 0;
-
-bool change = true;
 
 double lastT = millis();
 
@@ -43,8 +41,8 @@ void setup(void) {
     delay(10);  // will pause Zero, Leonardo, etc until serial console opens
 
   // Setup for Ultra and TOF
-  // setupUltrasonic();
-  setupTOF();
+  setupUltra();
+  // setupTOF();
   motor_setup();
   // Try to initialize Gyro
   setupGyro();
@@ -61,7 +59,7 @@ void loop() {
   //   change = false;
   // }
   // driveTime(currL, currR);
-  // Axes gyroOut = readGyro(oriX, oriY, oriZ);
+  // Axes gyroOut = readGyro(oriY, oriY, oriZ);
   // oriZ += gyroOut.z*(millis()-lastT)/1010;
 
   // myPID.Compute();
@@ -75,17 +73,17 @@ void loop() {
   // driveRight(210);
 //---------------------------------------GOOD FIND POLE CODE VVVV----------------------
   // driveTime(150, 150);
-  // Axes gyroOut = readGyro(oriX, oriY, oriZ);
-  // oriX += gyroOut.x*(millis()-lastT)/1010;
+  // Axes gyroOut = readGyro(oriY, oriY, oriZ);
+  // oriY += gyroOut.x*(millis()-lastT)/1010;
   // oriY += gyroOut.y*(millis()-lastT)/1010;
   
   // lastT = millis();
-  // Serial.println(oriX);
-  // if((oriX <= -2) || (abs(oriY) > 3)){
+  // Serial.println(oriY);
+  // if((oriY <= -2) || (abs(oriY) > 3)){
   //   // driveTime(230, 230);
   //   // delay(3000);
   //   stop_motors();
-  //   oriX = 0;
+  //   oriY = 0;
   //   oriY = 0;
   //   delay(3000);
   //   lastT = millis();
@@ -104,80 +102,133 @@ void loop() {
   //   oriY = 0;
   // }
 
-//--------game day switch case---------------------------------------------
-  //   case 0: //find ramp
+  // driveTime(0, 0);
+// --------game day switch case---------------------------------------------
+  // driveTime(currL, currR)
+    
+    if (currCase == 0){ //find ramp
+      driveTime(200, 195);
+      Axes gyroOut = readGyro(oriX, oriY, oriZ);
+      oriZ += gyroOut.z*(millis()-lastT)/1010;
+      myPID.Compute();
+      lastT = millis();
 
-  //     driveTime(currL, currR);
-  //     Axes gyroOut = readGyro(oriX, oriY, oriZ);
-  //     oriZ += gyroOut.z*(millis()-lastT)/1010;
-
-  //     myPID.Compute();
+      float measured_dist = readUltra();
+    
+      if (measured_dist <= 40){
+        currCount += 1;
+      }
+      else{
+        currCount = 0;
+      }
+      if (currCount == 3){
+        delay(10);
+        turn(-90);
+        stop_motors();
+        delay(1000);
+        currCase++;   
+        oriZ = 0;     
+        oriY = 0;
+        lastT = millis();
+      }
+      // driveTime(currL, currR);
+//------------------wiggle code----------------------
+      // Axes gyroOut;
+      // gyroOut = readGyro(oriX, oriY, oriZ);
+      // oriY += gyroOut.y*(millis()-lastT)/1010;
       
-  //     if(rampDetected){ //if tof finds ramp
-  //       stop_motors();
-  //       turn(90);
-  //       currCase++;
-  //       stop_motors();
-  //       break;
-  //     }
+      // lastT = millis();
 
-  if(currCase == 1){ //ascend
-    driveTime(150, 150);
-    // gyroOut = readGyro(oriX, oriY, oriZ);
+      // driveLeft(255);
+      // driveRight(55);
+      // delay(300);
+
+
+      // driveLeft(55);
+      // driveRight(255);
+      // delay(300);
+      
+      // if(oriY <= -10){ //if tof finds ramp
+      //   stop_motors();
+      //   delay(1000);
+      //   oriY = 0;
+      //   currCase++;
+      // }
+      //------------------wiggle code----------------------
+    }
+  else if (currCase == 1){ //find ramp
+      driveTime(-currL, -currR);
+      Axes gyroOut = readGyro(oriX, oriY, oriZ);
+      oriZ += gyroOut.z*(millis()-lastT)/1010;
+      oriY += gyroOut.y*(millis()-lastT)/1010;
+      lastT = millis();
+      myPID.Compute();
+
+      if (oriY >= 10){
+        currCase++;
+        delay(500);
+        oriX = 0;
+        lastT = millis();
+      }
+    }
+  
+  else if(currCase == 2){ //ascend
+    driveTime(-5, -5);
+    // gyroOut = readGyro(oriY, oriY, oriZ);
     // oriZ += gyroOut.z*(millis()-lastT)/1010;
 
     // myPID.Compute();
     Axes gyroOut = readGyro(oriX, oriY, oriZ);
-    oriX += gyroOut.x*(millis()-lastT)/1010;
+    oriY += gyroOut.y*(millis()-lastT)/1010;
     
     lastT = millis();
-    if(oriX >= 10){ //if ultra finds top
+    if(oriY <= -5){ //if ultra finds top
       currCase++;
-      driveTime(200, 200);
+      driveTime(-200, -200);
+      delay(1500);
       lastT = millis();
-      oriX = 0;
+      oriY = 0;
     }
   }
-  else if (currCase == 2){ //top of ramp
+  else if (currCase == 3){ //top of ramp
     Axes gyroOut = readGyro(oriX, oriY, oriZ);
-    oriX += gyroOut.x*(millis()-lastT)/1010;
+    oriY += gyroOut.y*(millis()-lastT)/1010;
     
     lastT = millis();
-    if(oriX >= 10){ //if ultra finds ramp down
-      driveTime(220, 220);
+    if(oriY <= -5){ //if ultra finds ramp down
+      driveTime(-220, -220);
       currCase++;
       lastT = millis();
-      // delay(2000);
-      oriX = 0;
+      delay(250);
+      oriY = 0;
     }
   }
-  else if (currCase == 3){ //descend
+  else if (currCase == 4){ //descend
     Axes gyroOut = readGyro(oriX, oriY, oriZ);
-    oriX += gyroOut.x*(millis()-lastT)/1010;
+    oriY += gyroOut.y*(millis()-lastT)/1010;
     
     lastT = millis();
-    if(oriX >= 10){ //if gyro reads 0 on y (yaw? idk lmao)
+    if(oriY <= -5){ //if gyro reads 0 on y (yaw? idk lmao)
       // turn(90);
-      driveTime(240, 240);
+      driveTime(-220, -220);
+      delay(250);
       currCase++;
       lastT = millis();
-
-      currCase++;
       // currL = 150;
       // currR = 150;
-      oriX = 0;
+      oriY = 0;
     }
   }
 
-  else if (currCase == 4){ //get off ramp
+  else if (currCase == 5){ //get off ramp
     Axes gyroOut = readGyro(oriX, oriY, oriZ);
-    oriX += gyroOut.x*(millis()-lastT)/1010;
+    oriY += gyroOut.y*(millis()-lastT)/1010;
     
     lastT = millis();
-    if(oriX <= -10){ //if gyro finds flat ground
+    if(oriY >= 10){ //if gyro finds flat ground
       stop_motors();
-      delay(1000);
-      turn(90);
+      delay(500);
+      turn(-90);
       // currL = 150;
       // currR = 150;
       currCase++;
@@ -187,7 +238,7 @@ void loop() {
 }
   // case 5: //go to pole
 //     driveTime(currL, currR);
-//     gyroOut = readGyro(oriX, oriY, oriZ);
+//     gyroOut = readGyro(oriY, oriY, oriZ);
 //     oriZ += gyroOut.z*(millis()-lastT)/1010;
 
 //     myPID.Compute();
@@ -209,8 +260,8 @@ void driveTime(double currL, double currR){
 }
 
 void turn(int deg) {
-  // Axes gyroOut = readGyro(oriX, oriY, oriZ);
-  // oriX = gyroOut.x;
+  // Axes gyroOut = readGyro(oriY, oriY, oriZ);
+  // oriY = gyroOut.x;
   // oriY = gyroOut.y;
   // oriZ = gyroOut.z;
   double lastT = millis();
@@ -219,7 +270,7 @@ void turn(int deg) {
     driveLeft(-225); //new: 70 old: -60
     driveRight(225); //new: -70 old: 52
     while(oriZ < (deg*0.96)){
-      gyroOut = readGyro(oriX, oriY, oriZ);
+      gyroOut = readGyro(oriY, oriY, oriZ);
       
       oriZ += gyroOut.z*(millis()-lastT)/1000; //970: 1000 minus 3 percent tolerance, 1.015: accounting for 1.5 percent tolerance due to cold day, change to 1 when near 25 deg C
       lastT = millis();
@@ -227,10 +278,10 @@ void turn(int deg) {
     }
   }
   else{
-    driveLeft(-225); //new: 70 old: 60
-    driveRight(225); //new: -70 old: -52
+    driveLeft(225); //new: 70 old: 60
+    driveRight(-225); //new: -70 old: -52
     while(oriZ > (deg*0.96)){
-      gyroOut = readGyro(oriX, oriY, oriZ);
+      gyroOut = readGyro(oriY, oriY, oriZ);
       
       oriZ += gyroOut.z*(millis()-lastT)/1000;
       lastT = millis();
@@ -238,7 +289,7 @@ void turn(int deg) {
     }
   }
   stop_motors();
-  oriX = 0;
+  oriY = 0;
   oriY = 0;
   oriZ = 0;
 }
